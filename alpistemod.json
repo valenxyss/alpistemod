@@ -3,9 +3,9 @@
     "name": "Alpiste Mod",
     "author": ["Weird Person", "Rubi", "Valenxyss"],
     "description":
-        "Todos los jokers con sprites añadidos y configurados (menos bbnos, lo termino en la siguente git pull). Todos los consumibles y sellos con sprites añadidos. Ciegas añadidas pero no configuradas. Todas las decks con sprites añadidas. BUGS (a mi conocimiento): El soundgoodizer aun no esta configurado, la cuqui suele tener un glitch raro de vez en cuando y bart depresivo no funciona bien. Si hay algun bug porfa hacedme dm",
+        "Bbnos hecho, bart depresivo arreglado, sebas el gato arreglado, franex arreglado, torrija arreglada.",
     "badge_colour": "DF509F",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "dependencies": [
         "Steamodded (>=1.0.0~ALPHA-1314a)",
         "Talisman"

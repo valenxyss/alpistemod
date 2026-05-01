@@ -1,6 +1,14 @@
 
 local faithful_destroyed = false
 local burnt_sold = false
+--- mainmenu
+SMODS.current_mod.menu_cards = function()
+    return { -- This takes any SMODS.create_card parameters
+        key = "j_prb_adif",
+        remove_original = true -- This removes the vanilla Ace
+    }
+end
+
 --- sounds 
 local goop = SMODS.Sound{
     key = "goop",
@@ -347,9 +355,7 @@ SMODS.Joker{
         if context.joker_main then
             return {
                 card = card,
-                Xmult_mod = card.ability.extra.Xmult,
-                message = "X" .. card.ability.extra.Xmult,
-                colour = G.C.XMULT
+                Xmult = card.ability.extra.Xmult,
             }
         end
     end
@@ -395,6 +401,7 @@ SMODS.Joker{
             if card.ability.extra.Xmult > 1 then
                 card.ability.extra.Xmult = card.ability.extra.Xmult - 1
                 if card.ability.extra.Xmult == 1 then
+                    G.GAME.pool_flags.faithful_destroyed = true
                     return {
                         message = "I TALK TO MINORS AL THE TIME",
                         colour = G.C.XMULT,
@@ -408,16 +415,18 @@ SMODS.Joker{
                                 end
                             }))
                         end,
-                        faithful_destroyed = true
                     }
                 else
                     return {
-                        message = "-1 Mult",
+                        message = "-1X Mult",
                         colour = G.C.XMULT
                     }
                 end
             end
         end
+    end,
+    in_pool = function (self, args)
+        return not G.GAME.pool_flags.faithful_destroyed
     end
 }
 
@@ -450,10 +459,7 @@ SMODS.Joker{
     }
     },
     in_pool = function(self, args)
-        if faithful_destroyed == false then
-            return false
-        end
-        return true
+        return G.GAME.pool_flags.faithful_destroyed
     end,
     loc_vars = function(self,info_queue,center)
         return {vars = {center.ability.extra.Xmult}}
@@ -502,7 +508,7 @@ SMODS.Joker{
             end
         end
         if context.selling_card and context.card == card then
-            burnt_sold = true
+            G.GAME.pool_flags.burnt_sold = true
         end
     end
 }
@@ -522,7 +528,7 @@ SMODS.Joker{
         name = "Northern Sausage",
         text = {
             "Al usar {C:attention}cualquier consumible{}",
-            "te otorga {X:mult,C:white}+ 0.5X{} Mult.",
+            "te otorga {X:mult,C:white}0.5X{} Mult.",
             "{C:inactive}Mult actual:{} {X:mult,C:white}X#1#{} {C:inactive}Mult{}"
         }
     },
@@ -537,10 +543,7 @@ SMODS.Joker{
         return {vars = {center.ability.extra.Xmult}}
     end,
     in_pool = function(self, args)
-        if burnt_sold then
-            return true
-        end
-        return false
+        return G.GAME.pool_flags.burnt_sold
     end,
     calculate = function(self,card,context)
         if context.using_consumeable then
@@ -589,11 +592,10 @@ SMODS.Joker{
     pos = {x = 0, y = 0},
     calculate = function(self, card, context)
         if context.selling_card and not context.blueprint and context.card == card then
-            local soundgoodizer = soundgoodizer.key
             local jokers_to_reroll = {}
-            -- guardar jokers válidos
             for i, joker in ipairs(G.jokers.cards) do
-                if not joker.ability.eternal and not joker.ability.soundgoodizer then
+                local is_sound = joker.ability.soundgoodizer
+                if not joker.ability.eternal and not is_sound then
                     table.insert(jokers_to_reroll, {card = joker, slot = i})
                 end
             end
@@ -611,7 +613,6 @@ SMODS.Joker{
                 local slot = data.slot
                 local rarity = joker.config.center.rarity
                 local old_key = joker.config.center_key
-                -- guardar edición
                 local edition = joker.edition
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
@@ -692,7 +693,14 @@ SMODS.Joker{
             card.ability.extra.moresebas = true
             card.ability.extra.chips = card.ability.extra.chips + 50
             return {
-                message = "funciona"
+                message = "hola sebota"
+            }
+        end
+        if context.joker_type_destroyed or context.selling_card and context.card.config.center_key == "j_prb_sebas" then
+            card.ability.extra.sebasnumber = card.ability.extra.sebasnumber - 1
+            card.ability.extra.chips = card.ability.extra.chips - 50
+            return {
+                message = "adios sebota"
             }
         end
         if context.joker_main and card.ability.extra.moresebas == true then
@@ -833,7 +841,7 @@ SMODS.Joker{
             end
             if enzo_card then
                 -- Quitar todo el dinero
-                G.GAME.dollars = 0
+                ease_dollars(0)
                 card_eval_status_text(card, 'extra', nil, nil, nil, {message = "CRUZAVIAS!", colour = G.C.RED, card = card})
                 -- Destruir Adif (si no es la card comprada)
                 if context.card.config.center_key ~= "j_prb_adif" then
@@ -914,16 +922,12 @@ SMODS.Joker{
             if context.cardarea == G.play then
                 if context.other_card:get_id() >= 5 then
                     return{
-                        message = "X0.5",
-                        colour = G.C.red,
-                        Xmult_mod = 0.5,
+                        Xmult = 0.5,
                         card = card
                     }
                 else
                     return{
-                        message = "X1.5",
-                        colour = G.C.red,
-                        Xmult_mod = 2.5,
+                        Xmult = 1.5,
                         card = card
                     }
                 end
@@ -1069,11 +1073,9 @@ SMODS.Joker{
             local roll = math.floor(pseudorandom("popo") * 2)
             if context.other_card:is_suit(poposuit.key) then
                 if roll == 1 then
-                    G.GAME.dollars = G.GAME.dollars + 2
                     return {
                         card = card,
-                        message = "$2",
-                        colour = G.C.MONEY
+                        dollars = 2,
                     }
                 else
                     return {
@@ -1447,13 +1449,12 @@ SMODS.Joker{
     loc_txt = {
         name = "Bart Derpresivo",
         text = {
-            "Te otorga {X:red,C:white}X0.5{} Mult",
-            "Por cada joker que tengas en tu mazo,",
+            "Te otorga {X:red,C:white}X0.9{} Mult",
+            "por cada joker que tengas en tu mazo,",
             "que no sea este {C:attention}mismo joker{}.",
-            "Por cada {C:attention}carta dehebilitada{} que tengas",
-            "en tu baraja de {C:attention}cartas jugables{},",
-            "el joker propio te otorga",
-            "{C:red}+15{} de Mult"
+            "Por cada {C:attention}joker{} que tengas en {C:attention}tu mazo{},",
+            "te dara {X:mult,C:white}X1{}de Mult.",
+            "{C:inactive}Mult actual:{}{X:mult,C:white}X#1#{}"
         }
     },
 
@@ -1461,22 +1462,28 @@ SMODS.Joker{
     cost = 5,
     atlas = "bart",
     pos = {x = 0, y = 0},
+    config = { extra = {jokernumber = 1, Xmult = 1}},
+    loc_vars = function (self, info_queue, center)
+        vars = {center.ability.extra.Xmult}
+    end,
     calculate = function (self, card, context)
-        if context.other_joker then
-            if context.other_joker ~= card then
-                G.E_MANAGER:add_event(Event({
-                    func = function()
-                        context.other_joker:juice_up(0.5, 0.5)
-                        return true
-                    end
-                })) 
-                return {
-                    Xmult_mod = 0.5,
-                    card = card,
-                    message = "X1.5 Mult",
-                    color = G.C.XMULT
-                }
-            end
+        card.ability.extra.jokernumber = #G.jokers.cards
+        if context.card_added then
+            card.ability.extra.jokernumber = card.ability.extra.jokernumber + 1
+            card.ability.extra.Xmult = card.ability.extra.jokernumber
+            return { message = "BART BASH" }
+        end
+        if context.other_joker and context.other_joker ~= card then
+            return {
+                Xmult = 0.9,
+                card = card,
+            }
+        end
+        if context.joker_main then
+            return {
+                Xmult = card.ability.extra.Xmult,
+                card = card
+            }
         end
     end
 }
@@ -1495,8 +1502,8 @@ SMODS.Joker{
     loc_txt = {
         name = "Bfdi Rule 34",
         text = {
-            "Si no haces nada en la tienda",
-            "te otorga {X:red,C:white}X3{} de Mult.",
+            "Si no compras nada en la tienda",
+            "te otorga {hacesX:red,C:white}X3{} de Mult.",
             "Se reinicia al pasar a la",
             "siguente tienda"
         }
@@ -1511,7 +1518,7 @@ SMODS.Joker{
             card.ability.shop_inactive = true
         end
         
-        if (context.buying_card or context.using_consumeable or context.selling_card) and not context.blueprint then
+        if (context.buying_card or context.using_consumeable or context.selling_card or context.reroll_shop) and not context.blueprint then
             card.ability.shop_inactive = false
             return {
                 message = "NO ME TOQUES",
@@ -1528,9 +1535,7 @@ SMODS.Joker{
             if card.ability.shop_inactive then
                 return {
                     card = card,
-                    Xmult_mod = 3,
-                    message = "X3 Mult",
-                    colour = G.C.XMULT
+                    Xmult = 3,
                 }
             else
                 card.ability.shop_inactive = true
@@ -1579,7 +1584,7 @@ SMODS.Joker{
                         G.GAME.blind:debuff_card(_card)
                         G.hand:sort()
                         if context.blueprint_card then context.blueprint_card:juice_up() else card:juice_up() end
-                        card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "hola popa" .. seal_type, colour = G.C.RED})
+                        card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "hola popa", colour = G.C.RED})
                         return true
                     end}))
                 playing_card_joker_effects({true})
@@ -1638,10 +1643,7 @@ SMODS.Joker{
                     joker:start_dissolve()
                 end
             end
-            if rarity_to_give > 5 then
-                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "demasiados comodines ADIOS CHOPI", colour = G.C.RED})
-                return nil, true
-            elseif rarity_to_give == 2 then
+            if rarity_to_give == 2 then
                 local new_card = create_card('Joker', G.jokers, nil, 0, nil, nil, nil, 'car')
                 new_card:add_to_deck()
                 G.jokers:emplace(new_card)
@@ -1656,12 +1658,11 @@ SMODS.Joker{
                 new_card:add_to_deck()
                 G.jokers:emplace(new_card)
                 new_card:start_materialize()
-            elseif rarity_to_give == 5 then
+            elseif rarity_to_give > 5 then
                 local new_card = create_card('Joker', G.jokers, true, nil, nil, nil, nil, 'car')
                 new_card:add_to_deck()
                 G.jokers:emplace(new_card)
                 new_card:start_materialize()
-                G.GAME.dollars = 0
             end
             if math.floor(pseudorandom('franex') * 5) == 1 then
                 card:start_dissolve()
@@ -1720,9 +1721,9 @@ SMODS.Joker{
                     card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "oye para hacer tanto frio te veo muy rojo"})
                 end
             else
-                G.GAME.dollars = G.GAME.dollars - 1
                 return {
-                    message = "IMPUESTOS PARA TERMINAR TOMATE Y ZANAHORIA"
+                    message = "IMPUESTOS PARA TERMINAR TOMATE Y ZANAHORIA",
+                    dollars = G.GAME.dollars - 1
                 }
             end
         end  
@@ -1812,10 +1813,9 @@ SMODS.Joker{
                         break
                     end
                 end
-                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "LARPEO FALLIDO", colour = G.C.RED})
-                    return {
-                        message = "boi u cant larp tomoko"
-                    }
+                return {
+                    message = "boi u cant larp tomoko"
+                }
                 end
                 roll = math.floor(pseudorandom("tomoko") * #G.jokers.cards)
                 local card = copy_card(other_joker, nil)
@@ -1831,7 +1831,9 @@ SMODS.Joker{
                     end
                 end
                 card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "LARPEO FALLIDO", colour = G.C.RED})
-                G.GAME.dollars = G.GAME.dollars - 10
+                return {
+                    dollars = G.GAME.dollars - 10
+                }
             end
         end
     end
@@ -1920,10 +1922,10 @@ SMODS.Joker{
     calculate = function(self, card, context)
         if context.setting_blind then
             local stolen = math.floor(G.GAME.dollars / 2)
-            G.GAME.dollars = G.GAME.dollars - stolen
             return {
                 message = "ROBADO POR MORO",
-                colour = G.C.RED
+                colour = G.C.RED,
+                dollars = G.GAME.dollars - stolen
             }
         end
         if context.buying_card and not context.blueprint then
@@ -1932,7 +1934,7 @@ SMODS.Joker{
                 local jokerbought = G.jokers.cards[#G.jokers.cards]
                 if jokerbought.config.center.rarity == 1 then
                     jokerbought:start_dissolve()
-                    local new_joker = create_card('Joker', G.jokers, nil, math.max(pseudorandom("rarity 1", 0.71), 1),nil, nil, nil, 'car')
+                    local new_joker = create_card('Joker', G.jokers, nil, math.min(pseudorandom("rarity 1", 0.71, 1), 1),nil, nil, nil, 'car')
                     new_joker:add_to_deck()
                     G.jokers:emplace(new_joker)
                     new_joker:start_materialize()
@@ -1996,10 +1998,8 @@ SMODS.Joker{
     calculate = function (self,card,context)
         if context.joker_main then
             return{
-                Xmult_mod = card.ability.extra.Xmult,
-                card = card,
-                message = "X" .. card.ability.extra.Xmult ..  "Mult",
-                colour = G.C.XMULT
+                Xmult = card.ability.extra.Xmult,
+                card = card
             }
         end
         if card.ability.doneinone == nil then
@@ -2075,11 +2075,13 @@ SMODS.Joker{
             if math.floor(pseudorandom("kaicenat") * 5) == 1 then
                 card.ability.extra.Pmult = card.ability.extra.Pmult + 0.25
                 return {
+                    card = card,
                     message = "KAI CENAT SPEED ROFL",
                     colour = G.C.PURPLE
                 }
             else
                 return {
+                    card = card,
                     message = "no kai cenat",
                     colour = G.C.RED
                 }
@@ -2201,73 +2203,73 @@ SMODS.Joker{
         return {vars = {center.ability.extra.Xmult}}
     end,
     calculate = function(self, card, context)
-    if context.before and context.poker_hands['High Card'] then
+    if context.before and next(context.poker_hands['High Card']) then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("highcard", 5, 50))
         return {
             message = 'HIGHCARD USERIANA',
             colour = G.C.RED
         }    
-    elseif context.before and context.poker_hands['Flush'] then
+    elseif context.before and next(context.poker_hands['Flush'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flush", 2, 35))
         return {
             message = 'COLOR USERIANO',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Pair'] then
+    elseif context.before and next(context.poker_hands['Pair'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("pair", 2, 40))
         return {
             message = 'PAREJA USERIANA',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Two Pair'] then
+    elseif context.before and next(context.poker_hands['Two Pair'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("twopair", 2, 45))
         return {
             message = 'PAREJA USERIANA',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Three of a Kind'] then
+    elseif context.before and next(context.poker_hands['Three of a Kind'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("three", 2, 40))
         return {
             message = 'TRIO USERIANO',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Straight'] then
+    elseif context.before and next(context.poker_hands['Straight'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("straight", 2, 50))
         return {
             message = 'ESCALERA USERIANA',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Full House'] then
+    elseif context.before and next(context.poker_hands['Full House'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("fullhouse", 2, 40))
         return {
             message = 'CASA USERIANA',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Four of a Kind'] then
+    elseif context.before and next(context.poker_hands['Four of a Kind'])  then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("four", 3, 45))
         return {
             message = 'POKER USERIANO',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Straight Flush'] then
+    elseif context.before and next(context.poker_hands['Straight Flush']) then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("coloresca", 4, 40))
         return {
             message = 'ESCALERA COLORIDA USERIANA',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Five of a Kind'] then
+    elseif context.before and next(context.poker_hands['Five of a Kind']) then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("five", 2, 30))
         return {
             message = 'REPOQUER USERIANO',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Flush House'] then
+    elseif context.before and next(context.poker_hands['Flush House']) then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flushouse", 3, 35))
         return {
             message = 'FULL DE COLOR USERIANO',
             colour = G.C.RED
         }
-    elseif context.before and context.poker_hands['Flush Five'] then
+    elseif context.before and next(context.poker_hands['Flush Five']) then
         card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flushfive", 3, 35))
         return {
             message = 'CINCO DE COLOR USERIANO',
@@ -2296,6 +2298,7 @@ SMODS.Atlas{
     py = 95
 }
 
+
 SMODS.Joker{
     key = "bbnos",
     rarity = 4,
@@ -2306,10 +2309,54 @@ SMODS.Joker{
     loc_txt = {
         name = "Bbno$",
         text = {
-            "me da una pereza hacer eso",
-            "lo termino en el siguente git pull"
+            "Otorga {X:purple,C:white,E:2,s:2}^#2#{} Mult,",
+            "sube un {X:purple,C:white,E:2,s:2}^1{} Mult por cada",
+            "joker en tu baraja.",
+            "A cambio, hay una probabilidad de {C:green}1 entre 1000{} de",
+            "{C:red}perder el juego{} por cada {C:attention}segundo que pasa.{}",
+            "#1#"
         }
-    }
+    },
+    config = {extra = {counter = 0, emult = 1}},
+    loc_vars = function (self, info_queue, center)
+        return {vars = {center.ability.extra.counter, center.ability.extra.emult}}
+    end,
+    update = function(self,card,dt)
+        if G.STAGE == 2 and card.area == G.jokers then
+        card.ability.extra.counter = card.ability.extra.counter + 1
+        end
+        if card.ability.extra.counter == 120 then
+            card.ability.extra.counter = 0
+            local chance = math.floor(pseudorandom("bbnos", 1 ,1000))
+            if chance == 67 then
+                G.STATE = G.STATES.GAME_OVER
+                if not G.GAME.won and not G.GAME.seeded and not G.GAME.challenge then
+                    G.PROFILES[G.SETTINGS.profile].high_scores.current_streak.amt = 0
+                end
+                G:save_settings()
+                G.FILE_HANDLER.force = true
+                G.STATE_COMPLETE = false
+            end
+        end
+    end,
+    calculate = function (self, card, context)
+        card.ability.extra.emult = #G.jokers.cards
+        if (context.buying_card or context.card_added) and context.card.area == G.jokers then
+            return {
+                card = card,
+                message = "COME COME TO ISRAEL",
+                colour = G.C.EDITION
+            }
+        end
+        if context.joker_main then
+            return {
+                card = card,
+                Emult_mod = card.ability.extra.emult,
+                message = "^" .. card.ability.extra.emult ..  " Mult",
+                colour = G.C.PURPLE
+            }
+        end
+    end
 }
 
 --consumibles
@@ -2333,7 +2380,8 @@ SMODS.Consumable{
             "y les pone {C:attention}un sello, encantamiento",
             "{C:attencion}edicion{}",
             "aleatorias.",
-            "No da chachisellos"
+            "No da chachisellos",
+            "Deja el {C:money}dinero{} a 0",
         }
     } ,
     atlas = "torrija",
@@ -2348,6 +2396,7 @@ SMODS.Consumable{
         end
     end,
     use = function (self, card, area, copier)
+        ease_dollars(-G.GAME.dollars)
         for i = 1, #G.hand.highlighted do
             local sealroll = math.floor(pseudorandom("torrija") * 3)
             if sealroll == 0 then
@@ -2591,10 +2640,10 @@ SMODS.Back{
                         v:change_suit(poposuit.key)
                     end
                     if v.base.suit == 'Spades' then 
-                        v:change_suit(poposuit.key)
+                        v:start_dissolve()
                     end
                     if v.base.suit == 'Hearts' then 
-                        v:change_suit(poposuit.key)
+                        v:start_dissolve()
                     end
                 end
             return true
