@@ -3305,6 +3305,124 @@ SMODS.Joker{
         end
     end
 }
+-- netanyahu
+SMODS.Atlas{
+    key = "netanyahu",
+    path = "Netanyahu.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Joker{
+    key = "netanyahu",
+    rarity = 4,
+    cost = 20,
+    atlas = "netanyahu",
+    pos = {x = 0, y = 0},
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
+    loc_txt = {
+        name = "Netanyahu",
+        text = {
+            "{X:mult,C:white}X#1#{} Mult.",
+            "El {X:mult,C:white}XMult{} sera igual a la cantidad de",
+            "{C:money}dinero{} que tengas actualmente.",
+            "Al entrar {C:attention}a la tienda{}, tu dinero",
+            "se multiplicara por {X:money,C:white}X1.5{}, redondeado hacia abajo.",
+            "{X:edition,C:white,E:1,s:2}BENJAMIN{} {X:edition,C:white,E:1,s:2}BIG YAHU{}",
+            "{X:edition,C:white,E:1,s:2}PONME{} {X:edition,C:white,E:1,s:2}LOS{} {X:edition,C:white,E:1,s:2}FILIPINOS{} {X:edition,C:white,E:1,s:2}A{}",
+            "{X:edition,C:white,E:1,s:2}MENOS{} {X:edition,C:white,E:1,s:2}DE{} {X:edition,C:white,E:1,s:2}90{} {X:edition,C:white,E:1,s:2}CENTIMOS{}"
+        }
+    },
+    config = { extra = {Xmult = 1}},
+    loc_vars = function(self,info_queue,center)
+        return {vars = {center.ability.extra.Xmult}}
+    end,
+    calculate = function(self, card, context)
+        card.ability.extra.Xmult = G.GAME.dollars
+        if context.joker_main then
+            return {
+                card = card,
+                Xmult = card.ability.extra.Xmult
+            }
+        end
+        if context.setting_blind then
+            local new_dollars = math.floor(G.GAME.dollars * 1.5)
+            ease_dollars(new_dollars)
+            return {
+                message = "YAHU TE HA MULTIPLICADO EL DINERO POR 1.5",
+                colour = G.C.GREEN
+            }
+        end
+    end
+}
+-- hazbin hotel
+SMODS.Atlas{
+    key = "hazbin",
+    path = "HazbinHotel.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Joker{
+    key = "hazbin",
+    rarity = 4,
+    cost = 20,
+    atlas = "hazbin",
+    pos = {x = 0, y = 0},
+    soul_pos = {x = 1, y = 0},
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
+    loc_txt = {
+        name = "Hazbin Hotel",
+        text = {
+            "{X:purple,C:white,E:2,s:2}^#1#{} Mult.",
+            "Vender un {C:attention}consumible{} sumara un {X:purple,C:white,E:2,s:2}^0.5{} Mult.",
+            "Esto se reseteara al {C:attention}final del ante{}.",
+            "Al vender 12 {C:attention}consumibles{}, se creara un",
+            "{C:attention}Joker{} {C:rare}raro{} {C:blue}perecedero{} aleatorio en tu {C:attention}mazo{}.",
+            "{C:red,s:1.2,E:1}porque me haceis esto{}"
+        }
+    },
+    config = { extra = {Emult = 1}},
+    loc_vars = function(self,info_queue,center)
+        return {vars = {center.ability.extra.Emult}}
+    end,
+    calculate = function(self, card, context)
+        if context.selling_card and context.card.area == G.consumeables then
+            card.ability.extra.Emult = (card.ability.extra.Emult or 1) + 0.5
+            if card.ability.extra.Emult >= 6 then
+                local new_joker = create_card('Joker', G.jokers, nil, math.min(pseudorandom("hazbin", 0.71, 1), 1),nil, nil, nil, 'car')
+                new_joker:add_to_deck()
+                G.jokers:emplace(new_joker)
+                new_joker:start_materialize()
+                new_joker:set_edition({negative = true}, true)
+                new_joker:add_sticker("perishable", true)
+                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "HAS VENDIDO 12 CONSUMIBLES", colour = G.C.GREEN, card = card})
+            else
+                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "CONSUMIBLE VENDIDO", colour = G.C.GREEN, card = card})
+            end
+        end
+        if context.ante_change then
+            card.ability.extra.Emult = 1
+            return {
+                message = "MULTIPLICADOR RESETEADO",
+                colour = G.C.BLUE,
+                card = card
+            }
+        end
+        if context.joker_main then
+            return {
+                card = card,
+                Emult_mod = card.ability.extra.Emult,
+                message = "^" .. card.ability.extra.Emult ..  " Mult",
+                colour = G.C.PURPLE
+            }
+        end
+    end
+}
 
 -- maldicion chimpa
 
@@ -3391,6 +3509,7 @@ SMODS.Joker{
     in_pool = function (self, args)
         return false
     end,
+    config = { extra = {left = 5}},
     calculate = function (self, card, context)
         if context.stay_flipped and context.to_area == G.hand and
                 SMODS.pseudorandom_probability(card, 'prb_m_muchacho', 1, 2) then
