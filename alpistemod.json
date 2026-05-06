@@ -1,16 +1,16 @@
 {
     "id": "AlpisteMod",
     "name": "Alpiste Mod",
-    "author": ["Weird Person", "Rubi", "Valenxyss"],
+    "author": ["Alpiste Mod Team"],
     "description":
-        "Bbnos hecho, bart depresivo arreglado, sebas el gato arreglado, franex arreglado, torrija arreglada.",
+        "Todos los jokers (con sprites) hechos.",
     "badge_colour": "DF509F",
     "version": "1.2.2",
     "dependencies": [
         "Steamodded (>=1.0.0~ALPHA-1314a)",
-        "Talisman"
+        "Amulet"
     ],
     "prefix": "prb",
-    "main_file": "main.lua",
+    "main_file": "alpistemod.lua",
     "priority": 37
 }
