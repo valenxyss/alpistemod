@@ -3305,6 +3305,102 @@ SMODS.Joker{
         end
     end
 }
+
+
+-- edward skeletrix
+
+SMODS.Atlas{
+    key = "skeletrix",
+    path = "Skeletrix.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Joker{
+    key = "skeletrix",
+    rarity = 4,
+    cost = 20,
+    atlas = "skeletrix",
+    pos = {x = 0, y = 0},
+    soul_pos = {x = 1, y = 0},
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
+    loc_txt = {
+        name = "Edward Skeletrix",
+        text = {
+            "Copia al {C:attention}joker{} que este {C:blue}mas a la izquierda.{}",
+            "Al salir de {C:attention}la tienda{},",
+            "Hay una probabilidad de {C:green}1 entre 2{} de que",
+            "Haga una {C:attention}copia exacta{} del {C:attention}joker{},",
+            "que este {C:red}mas a la derecha{}.",
+            "{C:inactive,s:0.9}No pueden hacerse copias de jokers legendarios.{}",
+            "{C:dark_edition,s:2,E:1}BILLETE GRATIS A LA ISLA DE SKELETRIX{}"
+        }
+    },
+    calculate = function(self, card, context)
+        local other_joker = G.jokers.cards[1]
+        local other_joker_ret = SMODS.blueprint_effect(card, other_joker, context)
+        if other_joker_ret then
+            return other_joker_ret
+        end
+        local rightmost_joker = G.jokers.cards[#G.jokers.cards]
+        if context.ending_shop and rightmost_joker and rightmost_joker ~= card and rightmost_joker.config.center.rarity ~= 4 then
+            if math.floor(pseudorandom("skeletrix", 1, 2)) == 1 then
+                local copy = copy_card(rightmost_joker, nil)
+                copy:add_to_deck()
+                G.jokers:emplace(copy)
+                copy:start_materialize()
+                card_eval_status_text(card, 'extra', nil, nil, nil, {message = "HIZO EL JOKER A LOS 13 BTW", colour = G.C.GREEN, card = card})
+            else
+                card_eval_status_text(card, 'extra', nil, nil, nil, {message = "NO HIZO EL JOKER A LOS 13 BTW...", colour = G.C.RED, card = card})
+            end
+        end
+    end
+}
+--heldepa
+SMODS.Atlas{
+    key = "heldepa",
+    path = "Heldepa.png",
+    px = 71,
+    py = 95
+}
+SMODS.Joker{
+    key = "heldepa",
+    rarity = 4,
+    cost = 20,
+    atlas = "heldepa",
+    pos = {x = 0, y = 0},
+    soul_pos = {x = 1, y = 0},
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
+    loc_txt = {
+        name = "Heldepa",
+        text = {
+            "Aumenta las C:chips}fichas{} actuales",
+            "de la {C:attention}ciega{} al",
+            "requerimiento de fichas requeridos en {C:red}esta ciega{}.",
+            "dividido entre 2, {C:attention}redondeado hacia abajo{}.",
+            "{C:mult,s:2,E:1}NUEVA COMPETENCIA A YEAT{}"
+        }
+    },
+    calculate = function(self, card, context)
+        if context.setting_blind  then
+            G.E_MANAGER:add_event(Event({
+                trigger = "ease",
+                delay = 5,
+                ref_table = G.GAME,
+                ref_value = "chips",
+                ease_to = G.GAME.chips + math.ceil(G.GAME.blind.chips * 0.5),
+            }))
+            return {
+                message = "UNA LEIDIIIBOI",
+                colour = G.C.GREEN
+            }
+        end
+    end
+}
 -- netanyahu
 SMODS.Atlas{
     key = "netanyahu",
@@ -3401,6 +3497,7 @@ SMODS.Joker{
                 new_joker:set_edition({negative = true}, true)
                 new_joker:add_sticker("perishable", true)
                 card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "HAS VENDIDO 12 CONSUMIBLES", colour = G.C.GREEN, card = card})
+                card.ability.extra.Emult = 1
             else
                 card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "CONSUMIBLE VENDIDO", colour = G.C.GREEN, card = card})
             end

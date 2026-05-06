@@ -327,8 +327,7 @@ return {
 					"sube un {X:purple,C:white,E:2,s:2}^1{} Mult por cada",
 					"joker en tu baraja.",
 					"A cambio, hay una probabilidad de {C:green}1 entre 1000{} de",
-					"{C:red}perder el juego{} por cada {C:attention}segundo que pasa.{}",
-					"#1#",
+					"{C:red}perder el juego{} por cada {C:attention}segundo que pasa.{}"
 				},
 			},
 			["j_prb_mikecrack"] = {
