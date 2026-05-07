@@ -210,3 +210,35 @@ SMODS.Seal{
         end
     end
 }
+--sello bomba
+G.eltino = false
+SMODS.Atlas{
+    key = "bomba",
+    path = "SelloBomba.png",
+    px = 71,
+    py = 95
+}
+SMODS.Seal{
+    key = "bomba",
+    loc_txt = {
+        name = "Sello Bomba",
+        label = "Sello Bomba",
+        text = {
+            "{X:mult,C:white}X0{} de Mult",
+            "La {C:attention}carta{} se destruye al jugarse"
+        }
+    },
+    atlas = "bomba",
+    pos = {x = 0, y = 0},
+    badge_colour = HEX("2A2A2A"),
+    calculate = function (self, card, context)
+        if not G.eltino then
+            self.pos = {x = 0, y = 1}
+        end
+        if context.cardarea == G.play and context.main_scoring then
+            card:start_dissolve()
+            return {card = card, Xmult = 0, message = "YA NO ESTOY"}
+        end
+
+    end
+}

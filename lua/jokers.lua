@@ -591,7 +591,7 @@ SMODS.Joker{
         if context.selling_card and not context.blueprint and context.card == card then
             local jokers_to_reroll = {}
             for i, joker in ipairs(G.jokers.cards) do
-                local is_sound = joker.ability.soundgoodizer
+                local is_sound = joker.ability.prb_soundgoodizer
                 if not joker.ability.eternal and not is_sound then
                     table.insert(jokers_to_reroll, {card = joker, slot = i})
                 end
@@ -1545,6 +1545,9 @@ SMODS.Joker{
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.Xmult}}
     end,
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
     loc_txt = {
         name = "Yaoi",
         text = {
@@ -1556,6 +1559,45 @@ SMODS.Joker{
     calculate = function(self,card,context)
         if context.individual and context.cardarea == G.play then
             if context.other_card.config.center_key == "m_stone" then
+                return {
+                    card = card,
+                    Xmult = card.ability.extra.Xmult
+                }
+            end
+        end
+    end
+}
+-- yuri
+SMODS.Atlas{
+    key = "yuri",
+    path = "Yuri.png",
+    px = 71,
+    py = 95
+}
+SMODS.Joker{
+    key = "yuri",
+    rarity = 3,
+    cost = 10,
+    atlas = "yuri",
+    pos = {x = 0, y = 0},
+    config = {extra = {Xmult = 2}},
+    loc_vars = function (self, info_queue, card)
+        return {vars = {card.ability.extra.Xmult}}
+    end,
+    loc_txt = {
+        name = "Yuri",
+        text = {
+            "Crea una {C:red,s:1.2,E:1}nueva mano de poker{}",
+            "que se activa cuando juegas {C:attention}5 cartas de meneillo.{}",
+            "{X:mult,C:white}X2{} Mult por cada {C:inactive}carta de meneillo jugada.{}"
+        }
+    },
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
+    calculate = function(self,card,context)
+        if context.individual and context.cardarea == G.play then
+            if context.other_card.config.center_key == "m_prb_cartameneillo" then
                 return {
                     card = card,
                     Xmult = card.ability.extra.Xmult
@@ -2257,13 +2299,13 @@ SMODS.Joker{
                         message = "SHAWTY IN LOVE WIT DA MEAT"
                     }
                 elseif editionroll == 2 then
-                    G.play.cards[1]:set_edition({foil = true}, true)
+                    G.play.cards[1]:set_edition({holo = true}, true)
                     return {
                         card = card,
                         message = "2SLIMEY STARE"
                     }
                 elseif editionroll == 3 then
-                    G.play.cards[1]:set_edition({holographic = true}, true)
+                    G.play.cards[1]:set_edition({foil = true}, true)
                     return {
                         card = card,
                         message = "HIGH ANXIETY IS TOP 1 UDG"
@@ -3158,83 +3200,82 @@ SMODS.Joker{
         G.add_hacienda()
     end,
     calculate = function(self, card, context)
-    if context.before and next(context.poker_hands['High Card']) then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("highcard", 5, 50))
-        return {
-            message = 'HIGHCARD USERIANA',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Flush'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flush", 2, 35))
-        return {
-            message = 'COLOR USERIANO',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Pair'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("pair", 2, 40))
-        return {
-            message = 'PAREJA USERIANA',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Two Pair'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("twopair", 2, 45))
-        return {
-            message = 'PAREJA USERIANA',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Three of a Kind'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("three", 2, 40))
-        return {
-            message = 'TRIO USERIANO',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Straight'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("straight", 2, 50))
-        return {
-            message = 'ESCALERA USERIANA',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Full House'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("fullhouse", 2, 40))
-        return {
-            message = 'CASA USERIANA',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Four of a Kind'])  then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("four", 3, 45))
-        return {
-            message = 'POKER USERIANO',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Straight Flush']) then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("coloresca", 4, 40))
-        return {
-            message = 'ESCALERA COLORIDA USERIANA',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Five of a Kind']) then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("five", 2, 30))
-        return {
-            message = 'REPOQUER USERIANO',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Flush House']) then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flushouse", 3, 35))
-        return {
-            message = 'FULL DE COLOR USERIANO',
-            colour = G.C.RED
-        }
-    elseif context.before and next(context.poker_hands['Flush Five']) then
-        card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flushfive", 3, 35))
-        return {
-            message = 'CINCO DE COLOR USERIANO',
-            colour = G.C.RED
-        }
-    end
+        local returntable = {}
+        if context.before and next(context.poker_hands['High Card']) then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("highcard", 5, 50))
+            returntable = {
+                message = 'HIGHCARD USERIANA',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Flush'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flush", 2, 35))
+            returntable = {
+                message = 'COLOR USERIANO',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Pair'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("pair", 2, 40))
+            returntable = {
+                message = 'PAREJA USERIANA',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Two Pair'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("twopair", 2, 45))
+            returntable = {
+                message = 'PAREJA USERIANA',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Three of a Kind'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("three", 2, 40))
+            returntable = {
+                message = 'TRIO USERIANO',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Straight'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("straight", 2, 50))
+            returntable = {
+                message = 'ESCALERA USERIANA',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Full House'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("fullhouse", 2, 40))
+            returntable = {
+                message = 'CASA USERIANA',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Four of a Kind'])  then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("four", 3, 45))
+            returntable = {
+                message = 'POKER USERIANO',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Straight Flush']) then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("coloresca", 4, 40))
+            returntable = {
+                message = 'ESCALERA COLORIDA USERIANA',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Five of a Kind']) then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("five", 2, 30))
+            returntable = {
+                message = 'REPOQUER USERIANO',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Flush House']) then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flushouse", 3, 35))
+            returntable = {
+                message = 'FULL DE COLOR USERIANO',
+                colour = G.C.RED
+            }
+        elseif context.before and next(context.poker_hands['Flush Five']) then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + math.floor(pseudorandom("flushfive", 3, 35))
+            returntable = {
+                message = 'CINCO DE COLOR USERIANO',
+                colour = G.C.RED
+            }
+        end
     if context.joker_main then
-        return {
-            Xmult = card.ability.extra.Xmult
-        }
+        return returntable
     end
     if context.final_scoring_step then
         card.ability.extra.Xmult = 1
@@ -3517,6 +3558,89 @@ SMODS.Joker{
                 message = "^" .. card.ability.extra.Emult ..  " Mult",
                 colour = G.C.PURPLE
             }
+        end
+    end
+}
+-- pisswoman
+SMODS.Atlas{
+    key = "pisswoman",
+    path = "PissWoman.png",
+    px = 71,
+    py = 95
+}
+SMODS.Joker{
+    key = "pisswoman",
+    rarity = 4,
+    cost = 20,
+    atlas = "pisswoman",
+    pos = {x = 0, y = 0},
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+    end,
+    config = { extra = {hands = 0}},
+    loc_vars = function(self,info_queue,center)
+        return {vars = {center.ability.extra.hands}}
+    end,
+    loc_txt = {
+        name = "PissWoman",
+        text = {
+            "Cada {C:blue}3 manos jugadas{}, añade una",
+            "{s:1.2,C:dark_edition,E:1}Edicion, sello y encantamiento{} aleatorio",
+            "A todas las {C:attention}cartas{} que saques {C:red}en tu mano.{}",
+            "Cada {C:attention}ante{} que completes, suma un",
+            "{C:attention}espacio de mano{}",
+            "{C:money,s:2,E:1}WHY MY PISS SMELL WAY TOO STRONG{}"
+        }
+    },
+    calculate = function(self, card, context)
+        if context.before and card.ability.extra.hands < 3 then
+            card.ability.extra.hands = card.ability.extra.hands + 1
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = "ERM BABE", colour = G.C.RED, card = card})
+        elseif context.before and card.ability.extra.hands >= 3 then
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = "WHY MA PISS SMELL WAY TOO STRONG", colour = G.C.RED, card = card})
+            for i = 1, #G.play.cards do  
+                local sealroll = math.floor(pseudorandom("torrija") * 3)
+                if sealroll == 0 then
+                    G.play.cards[i]:set_seal("Red", true)
+                elseif sealroll == 1 then
+                    G.play.cards[i]:set_seal("Blue", true)
+                elseif sealroll == 2 then
+                    G.play.cards[i]:set_seal("Gold", true)
+                elseif sealroll == 3 then
+                    G.play.cards[i]:set_seal("Purple", true)
+                end
+                local editionroll = math.floor(pseudorandom("torrijaedition") * 2)
+                if editionroll == 0 then
+                    G.play.cards[i]:set_edition({polychrome = true}, true)
+                elseif editionroll == 1 then
+                    G.play.cards[i]:set_edition({foil = true}, true)
+                elseif editionroll == 2 then
+                    G.play.cards[i]:set_edition({holographic = true}, true)
+                end
+                local enhancedroll = math.floor(pseudorandom("torrijaenhanced") * 7)
+                if enhancedroll == 0 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_gold, nil, true)
+                elseif enhancedroll == 1 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_bonus, nil, true)
+                elseif enhancedroll == 2 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_glass, nil, true)
+                elseif enhancedroll == 3 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_lucky, nil, true)
+                elseif enhancedroll == 4 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_mult, nil, true)
+                elseif enhancedroll == 5 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_steel, nil, true)
+                elseif enhancedroll == 6 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_stone, nil, true)
+                elseif enhancedroll == 7 then
+                    G.play.cards[i]:set_ability(G.P_CENTERS.m_wild, nil, true)
+                end
+            end
+            card.ability.extra.hands = 0
+        end
+        if context.ante_change then
+            G.hand.config.card_limit = G.hand.config.card_limit + 1
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = "HOLA SOY RUBI", colour = G.C.RED, card = card})
         end
     end
 }

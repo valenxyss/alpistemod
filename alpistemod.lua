@@ -22,3 +22,5 @@ assert(SMODS.load_file("lua/backs.lua"))()
 assert(SMODS.load_file("lua/blinds.lua"))()
 -- pokerhands
 assert(SMODS.load_file("lua/pokerhands.lua"))()
+-- enhancements
+assert(SMODS.load_file("lua/enhancements.lua"))()
