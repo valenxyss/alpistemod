@@ -27,13 +27,6 @@ SMODS.PokerHand{
         end
         return {}
     end,
-    loc_txt = {
-        name = "Pedrada",
-        description = {
-            "Se necesitan 5 cartas de piedra.",
-            "Solo se puede jugar con el joker {C:attention}Yaoi{}"
-        }
-    }
 }
 SMODS.PokerHand{
     key = "potingue",
@@ -64,11 +57,4 @@ SMODS.PokerHand{
         end
         return {}
     end,
-    loc_txt = {
-        name = "Potingue",
-        description = {
-            "Se necesitan 5 cartas de meneillo.",
-            "Solo se puede jugar con el joker {C:attention}Yuri{}"
-        }
-    }
 }

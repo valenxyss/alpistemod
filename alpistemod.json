@@ -3,14 +3,15 @@
     "name": "Alpiste Mod",
     "author": ["Alpiste Mod Team"],
     "description":
-        "Todos los jokers (con sprites) hechos.",
+        "beta 1 hecha siii me faltan las cartas de madera tho",
     "badge_colour": "DF509F",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "dependencies": [
         "Steamodded (>=1.0.0~ALPHA-1314a)",
         "Amulet"
     ],
     "prefix": "prb",
     "main_file": "alpistemod.lua",
-    "priority": 37
+    "priority": 37,
+    "dump_loc": true
 }

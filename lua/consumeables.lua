@@ -365,13 +365,6 @@ SMODS.Atlas{
 SMODS.Consumable{
     set = "Spectral",
     key = "chitlins",
-    loc_txt = {
-        name = 'Chitlins',
-        text = {
-            "{C:red,s:1.2,E:1}Sacrifica{} 4 cartas en tu mano para",
-            "otorgar un {C:attention}skip tag{} {E:1}aleatorio.{}",
-        }
-    },
     cost = 4,
     atlas = "chitlins",
     can_use = function (self,card)

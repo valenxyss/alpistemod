@@ -6,13 +6,6 @@ SMODS.Atlas{
 }
  SMODS.Seal{
     key = "chachisello1",
-    loc_txt = {
-        name = "Chachisello 1",
-        label = "Chachisello 1",
-        text = {
-            "No hace nada. (Todavia)"
-        }
-    },
     atlas = "chachisello1",
     pos = {x = 0, y = 0},
     badge_colour = HEX("B40000")
@@ -26,17 +19,6 @@ SMODS.Atlas{
 }
 SMODS.Seal{
     key = "chachisello2",
-    loc_txt = {
-        name = "Chachisello 2",
-        label = "Chachisello 2",
-        text = {
-            "{C:green}1 de #1#{} de generar un joker {C:common}comun{}",
-            "{C:dark_edition}negativo{} al jugar la carta,",
-            "la probabilidad {C:green}sube{}",
-            "si el joker se genera",
-            "satisfactoriamente."
-        }
-    },
     atlas = "chachisello2",
     pos = {x = 0, y = 0},
     badge_colour = HEX("B43400"),
@@ -74,17 +56,6 @@ SMODS.Atlas{
 }
 SMODS.Seal{
     key = "chachisello3",
-    loc_txt = {
-        name = "Chachisello 3",
-        label = "Chachisello 3",
-        text = {
-            "{C:green}1 de #1#{} de generar un joker {C:uncommon}poco comun{}",
-            "{C:dark_edition}negativo{} al jugar la carta,",
-            "la probabilidad {C:green}sube{}",
-            "si el joker se genera",
-            "satisfactoriamente."
-        }
-    },
     atlas = "chachisello3",
     pos = {x = 0, y = 0},
     badge_colour = HEX("C5B900"),
@@ -123,17 +94,6 @@ SMODS.Atlas{
 
  SMODS.Seal{
     key = "chachisello4",
-    loc_txt = {
-        name = "Chachisello 4",
-        label = "Chachisello 4",
-        text = {
-            "{C:green}1 de #1#{} de generar un joker {C:rare}raro{}",
-            "{C:dark_edition}negativo{} al jugar la carta,",
-            "la probabilidad {C:green}sube{}",
-            "si el joker se genera",
-            "satisfactoriamente."
-        }
-    },
     atlas = "chachisello4",
     pos = {x = 0, y = 0},
     badge_colour = HEX("17008C"),
@@ -172,17 +132,6 @@ SMODS.Atlas{
 
 SMODS.Seal{
     key = "chachisello5",
-    loc_txt = {
-        name = "Chachisello 5",
-        label = "Chachisello 5",
-        text = {
-            "{C:green}1 de #1#{} de generar un joker {C:legendary}legendario{}",
-            "al jugar la carta,",
-            "la probabilidad {C:green}sube{}",
-            "si el joker se genera",
-            "satisfactoriamente."
-        }
-    },
     atlas = "chachisello5",
     pos = {x = 0, y = 0},
     badge_colour = HEX("2F0146"),
@@ -220,25 +169,14 @@ SMODS.Atlas{
 }
 SMODS.Seal{
     key = "bomba",
-    loc_txt = {
-        name = "Sello Bomba",
-        label = "Sello Bomba",
-        text = {
-            "{X:mult,C:white}X0{} de Mult",
-            "La {C:attention}carta{} se destruye al jugarse"
-        }
-    },
     atlas = "bomba",
     pos = {x = 0, y = 0},
     badge_colour = HEX("2A2A2A"),
     calculate = function (self, card, context)
-        if not G.eltino then
-            self.pos = {x = 0, y = 1}
+        if context.main_scoring and context.cardarea == G.play then
+            return {Xmult = 0, func = function ()
+                card:start_dissolve()
+            end}
         end
-        if context.cardarea == G.play and context.main_scoring then
-            card:start_dissolve()
-            return {card = card, Xmult = 0, message = "YA NO ESTOY"}
-        end
-
     end
 }

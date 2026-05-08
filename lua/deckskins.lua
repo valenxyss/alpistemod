@@ -29,7 +29,6 @@ local hcui = SMODS.Atlas{
 SMODS.DeckSkin {
 	key = "poporubi",
 	suit = "prb_pooposuit",
-	loc_txt = "Example",
 	palettes = {
 		{
 			key = 'lc',

@@ -6,14 +6,6 @@ SMODS.Atlas{
 }
 SMODS.Enhancement{
     key = "cartameneillo",
-    loc_txt = {
-        name = "Carta Meneillo",
-        text = {
-            "{C:green}51%{} de que te de {C:money}#1#${}.",
-            "{C:green}25%{} de dar {X:mult,C:white}X#2#{} Mult",
-            "{C:green}15%{} de dar una {C:attention,E:1}skip tag.{}",
-        }
-    },
     atlas = "cartameneillo",
     pos = {x=0, y=0},
     replace_base_card = true,

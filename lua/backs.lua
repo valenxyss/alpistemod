@@ -7,14 +7,6 @@ SMODS.Atlas{
 
 SMODS.Back{
     key = "bbtrikz",
-    loc_txt = {
-        name = "Deck de Bbtrickz",
-        text = {
-            "Empiezas solo",
-            "con cartas de",
-            "{C:attention}Popo{}"
-        }
-    },
     atlas = "bbtrikz",
     pos = { x = 0, y = 0 },
     apply = function(self,back)
@@ -48,14 +40,6 @@ SMODS.Atlas{
 
 SMODS.Back{
     key = "spicy",
-    loc_txt = {
-        name = "Deck de Spicy cheebohs",
-        text = {
-            "Solo puedes jugar con {C:red}1 mano.{}",
-            "Todas tus {C:attention}cartas{} tienen",
-            "{C:red}sello rojo{}"
-        }
-    },
     atlas = "spicy",
     pos = { x = 0, y = 0 },
     apply = function (self,back)
@@ -83,14 +67,6 @@ SMODS.Atlas{
 
 SMODS.Back{
     key = "camarada",
-    loc_txt = {
-        name = "Deck Camarada",
-        text = {
-            "Al entrar a una ciega,",
-            "no podras ver tus jokers.",
-            "se barajan por cada mano que saques."
-        }
-    },
     atlas = "camarada",
     pos = {x=0,y=0},
     calculate = function(self,back,context)
@@ -121,6 +97,30 @@ SMODS.Back{
                     G.E_MANAGER:add_event(Event({ func = function() G.jokers:shuffle('aajk'); play_sound('cardSlide1', 1);return true end })) 
                     delay(0.5)
             return true end })) 
+        end
+    end
+}
+--iradeck
+SMODS.Atlas{
+    key = "ira",
+    path = "IraDeck.png",
+    px = 71,
+    py = 95
+}
+SMODS.Back{
+    key = "ira",
+    atlas = "ira",
+    pos = {x=0,y=0},
+    calculate = function (self, back, context)
+        if context.setting_blind then
+            for i = 1, 67 do
+                local tung = create_card("Joker", G.jokers, nil, nil, nil, nil, "j_prb_tungsahur", "ira")
+                tung:add_to_deck()
+                G.jokers:emplace(tung)
+                tung:start_materialize()
+                tung:set_edition('e_negative')
+                tung:add_sticker("eternal", true)
+            end
         end
     end
 }

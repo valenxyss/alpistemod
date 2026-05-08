@@ -59,14 +59,6 @@ SMODS.Joker{
     atlas = "pclub",
     pos = {x=0,y=0},
     config = {extra = {mult = 4}},
-    loc_txt = {
-        name = "P Club",
-        text = {
-            "{C:red}+#1#{} de Mult.",
-            "Sube {C:red}+4{} si se añade",
-            "una carta con una {C:edition}edicion o mejora.{}"
-        }
-    },
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.mult}}
     end,
@@ -109,13 +101,6 @@ SMODS.Joker{
     cost = 3,
     atlas = "guillermo",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Guillermo Papoi",
-        text = {
-            "{E:1,C:blue}Copia al joker mas a la derecha,{}",
-            "solo si el {C:attention}joker{} es {C:common}comun."
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
@@ -144,14 +129,6 @@ SMODS.Joker{
     cost = 3,
     atlas = "ii",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "II Te chingue",
-        text = {
-            "{C:red}+#1#{} de Mult.",
-            "al ganar una {C:attention,E:1}ciega jefe{}",
-            "{C:red}-5{} de Mult"
-        }
-    },
     config = {extra = {mult = 20}},
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.mult}}
@@ -183,14 +160,6 @@ SMODS.Joker{
     cost = 3,
     atlas = "johnpollon",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "John Pollon",
-        text = {
-            "Al vender este joker,",
-            "convierte a todos tus {C:attention}jokers{}",
-            "en el {C:blue}joker del huevo.{}"
-        }
-    },
     calculate = function(self, card, context)
         if context.selling_card and context.card == card then
             card_eval_status_text(card, 'extra', nil, nil, nil, {message = "JOHN POLLON TE HA ENCONTRADO", colour = G.C.BLUE, card = card})
@@ -225,15 +194,6 @@ SMODS.Joker{
     cost = 3,
     atlas = "aymuchacho",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Ay Muchacho",
-        text = {
-            "{X:mult,C:white}X#1#{} Mult.",
-            "{C:green}1 entre 6{} de que la carta se {C:red}autodestruya{}",
-            "al terminar la {C:attention}ronda{}. Si esto pasa,",
-            "genera la {C:purple,E:1,s:1.2}Maldicion Muchacho.{}"
-        }
-    },
     config = {extra = {Xmult = 3}},
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.Xmult}}
@@ -280,15 +240,6 @@ SMODS.Joker{
     cost = 3,
     atlas = "gatobubu",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Gato Bubu",
-        text = {
-            "{C:money}#1#${} al terminar la ronda.",
-            "{C:red}Baja -1${} por cada ronda superada.",
-            "Al pasar la segunda ronda, se te otoga",
-            "la {C:purple,E:1,s:1.2}Maldicion Bubu.{}"
-        }
-    },
     config = {extra = {money = 10}},
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.money}}
@@ -343,16 +294,7 @@ SMODS.Joker{
     rarity = 1,
     cost = 3,
     atlas = "pizza",
-    pos = {x=0,y=0},
-    loc_txt = {
-        name = "Don't Touch My Pizza",
-        text = {
-            "{C:green}1 entre 2{} de que se repita",
-            "una {C:attention}carta jugada.{}",
-            "Las cartas pueden repetirse hasta 3 veces."
-        }
-    },
-    add_to_deck = function (self, card, from_debuff)
+    pos = {x=0,y=0},to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
     calculate = function(self, card, context)
@@ -1208,13 +1150,6 @@ SMODS.Joker{
     cost = 10,
     atlas = "santi",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Santiago Segura",
-        text = {
-            "{X:dark_edition,C:white,E:1,s:1.2}Equilibra{}",
-            "las {C:chips}fichas{} y el {C:mult}mult{} que tienes.",
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
@@ -1244,17 +1179,6 @@ SMODS.Joker{
     rarity = 2,
     cost = 6,
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Hemmy",
-        text = {
-            "{C:red}#1#{} Mult, {X:mult,C:white}X#2#{} Mult.",
-            "Hay una probabilidad de {C:green}1 entre 2",
-            "de que este joker {C:attention,E:1}cree un comun negativo.{}",
-            "Si se repite {C:blue}4 veces{}, suma {X:mult,C:white}X#3#{}",
-            "al Mult total.",
-            "{C:inactive}Repeticiones restantes: #4#{}"
-        }
-    },
     config = {extra = {
         mult = 15,
         Xmult = 1,
@@ -1317,20 +1241,6 @@ SMODS.Joker{
     cost = 5,
     atlas = "omar",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Omar Montes",
-        text = {
-            "Te otorga el la cantidad de,",
-            "{C:money}dinero{} en posesion {C:attention}actualmente{}",
-            "dividido entre {C:red}2{}",
-            "como {X:mult,C:white}XMult.{}",
-            "hay una posibilidad de {C:green}1 entre 6{}",
-            "de convertir algunas de tus",
-            "{C:attention}cartas sacadas{}",
-            "en {C:money}cartas de oro.{}",
-            "{C:inactive}XMult actual:{} {X:mult,C:white}X#1#{}"
-        }
-    },
     config = {extra = {
         Xmult = 1
     }},
@@ -1375,17 +1285,6 @@ SMODS.Joker{
     cost = 5,
     atlas = "manolo",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Manolito Gafotas",
-        text = {
-            "{C:green}1 entre 2{} posibilidades que,",
-            "al abrir un {C:attention}booster{},",
-            "se genere una {C:attention}carta mas{}",
-            "para {C:blue}elegir{}.",
-            "{C:green}1 entre 10{} posibilidades que,",
-            "te deje {E:2,C:dark_edition}elegir 2 opciones{}"
-        }
-    },
     calculate = function (self, card, context)
         if context.open_booster then
             local roll = math.floor(pseudorandom("manolito", 1, 2))
@@ -1423,14 +1322,6 @@ SMODS.Joker{
     cost = 5,
     atlas = "reychimpa",
     pos = {x=0,y=0},
-    loc_txt = {
-        name = "Rey Chimpa",
-        text = {
-            "Al vender este {C:attention}joker{},",
-            "un joker que tengas sera {C:dark_edition,E:1}negativo.{}",
-            "A cambio, te otorgara la {C:legendary}Maldicion Chimpa.{}"
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
@@ -1485,17 +1376,6 @@ SMODS.Joker{
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.Xmult}}
     end,
-    loc_txt = {
-        name = "Roberto Bosoi",
-        text = {
-            "Al final de {C:attention}sacar una mano,{}",
-            "{C:attention,E:1}vorea{} {C:inactive}(destruye){} una carta al azar.",
-            "Por cada carta destruida, ganas {X:mult,C:white}X0.2{} Mult.",
-            "Dara {X:mult,C:white}X0.5{} Mult si {C:attention}la carta destruida{}",
-            "tiene algun tipo de {C:edition}edicion{}",
-            "{C:inactive}Mult actual:{} {X:mult,C:white}X#1#{}"
-        }
-    },
     calculate = function (self, card, context)
         if context.joker_main then
             return {
@@ -1548,14 +1428,6 @@ SMODS.Joker{
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
-    loc_txt = {
-        name = "Yaoi",
-        text = {
-            "Crea una {C:red,s:1.2,E:1}nueva mano de poker{}",
-            "que se activa cuando juegas {C:attention}5 cartas de piedra.{}",
-            "{X:mult,C:white}X2{} Mult por cada {C:inactive}carta de piedra jugada.{}"
-        }
-    },
     calculate = function(self,card,context)
         if context.individual and context.cardarea == G.play then
             if context.other_card.config.center_key == "m_stone" then
@@ -1584,14 +1456,6 @@ SMODS.Joker{
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.Xmult}}
     end,
-    loc_txt = {
-        name = "Yuri",
-        text = {
-            "Crea una {C:red,s:1.2,E:1}nueva mano de poker{}",
-            "que se activa cuando juegas {C:attention}5 cartas de meneillo.{}",
-            "{X:mult,C:white}X2{} Mult por cada {C:inactive}carta de meneillo jugada.{}"
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
@@ -1625,14 +1489,6 @@ SMODS.Joker{
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.Xmult}}
     end,
-    loc_txt = {
-        name = "Meganacho",
-        text = {
-            "{X:mult,C:white}X#1#{} Mult",
-            "Sube {X:mult,C:white}X1{} de Mult por cada",
-            "cada carta de rareza {C:legendary,E:1}maldita{} presente"
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
         for _, j in ipairs(G.jokers.cards) do
@@ -1679,16 +1535,7 @@ SMODS.Joker{
     rarity = 2,
     cost = 5,
     atlas = "julieta",
-    pos = {x = 0, y = 0},
-    loc_txt = {
-        name = "Julieta Pedorreta",
-        text = {
-            "Las cartas {C:black}Popo{} y",
-            "las cartas de {C:hearts}Corazones{}",
-            "cuentan como {C:attention}el mismo palo.{}"
-        }
-    },
-    add_to_deck = function (self, card, from_debuff)
+    pos = {x = 0, y = 0},to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
 }
@@ -1712,18 +1559,6 @@ SMODS.Joker{
     loc_vars = function (self, info_queue, card)
         return {vars = {card.ability.extra.timesleft}}
     end,
-    loc_txt = {
-        name = "Rod Wave" ,
-        text = {
-            "{C:green}1 en 2{} de posibilidades que cuando",
-            "salgas de la {C:attention}tienda{}, se",
-            "{C:red}destruya un joker aleatorio.{}",
-            "Al destruir {C:attention}4 jokers,",
-            "te genera un {s:1.2,C:dark_edition}joker aleatorio.{}",
-            "{C:inactive}El joker generado no puede ser un legendario.{}",
-            "{C:inactive}Jokers restantes: #1#"
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
@@ -2182,16 +2017,6 @@ SMODS.Atlas{
 
 SMODS.Joker{
     key = "rubi",
-    loc_txt = {
-        name = "Rubi Fumon",
-        text = {
-            "Al vender este joker,",
-            "te sube {C:attention}+1{} el Ante,",
-            "pero te multiplica el {C:money}dinero{}",
-            "con un maximo de {C:money}100${}"
-        }
-    },
-
     rarity = 2,
     cost = 6,
     atlas = "rubi",
@@ -2339,14 +2164,6 @@ SMODS.Joker{
     rarity = 2,
     cost = 5,
     atlas = "percatric",
-    loc_txt = {
-        name = "Percatric",
-        text = {
-            "Si tienes a {C:attention}este joker,{}",
-            "los jokers {C:purple,E:1,s:1.2}malditos{} se eliminan",
-            "al añadirse a la {C:attention}baraja{}"
-        }
-    },
     pos = {x = 0, y = 0},
     calculate = function(self, card, context)
         if context.card_added and context.card.config.center.rarity == "prb_maldito" then
@@ -2371,16 +2188,6 @@ SMODS.Atlas{
 
 SMODS.Joker{
     key = "elvis",
-    loc_txt = {
-        name = "Elvis Presley",
-        text = {
-            "{X:mult,C:white}X#1#{} Mult.",
-            " Suma {X:mult,C:white}X1{} al Mult al",
-            "usarse {C:attention}10 consumibles{} en",
-            "esta partida.",
-            "{C:inactive}Consumibles restantes: #2#{}"
-        }
-    },
     rarity = 2,
     cost = 6,
     atlas = "elvis",
@@ -2601,14 +2408,6 @@ SMODS.Atlas{
 
 SMODS.Joker{
     key = "watersports",
-    loc_txt = {
-        name = "Watersports",
-        text = {
-            "Vende a este {C:attention}joker{},",
-            "para {C:dark_edition,E:1}duplicar{} las {C:attention}double tags{}",
-            "en tu {C:blue}inventario"
-        }
-    },
     rarity = 3,
     cost = 10,
     atlas = "watersports",
@@ -2648,15 +2447,6 @@ SMODS.Joker{
     cost = 10,
     atlas = "povers",
     blueprint_compat = false,
-    loc_txt = {
-        name = "Povers",
-        text = {
-            "Te da un {X:dark_edition,C:white,E:2,s:1.2}beneficio{} {X:dark_edition,C:white,E:2,s:1.2}aleatorio{}",
-            "Dependiendo de la baraja que estes jugando.",
-            "{s:1.2,E:1,C:attention}Siempre es eterno y no puedes tener copias de este joker.{}",
-            "{C:inactive}baraja actual: #1#{}",
-        }
-    },
     pos = {x=0,y=0},
     config = {
         stake = "Nada",
@@ -3057,15 +2847,6 @@ SMODS.Atlas{
 
 SMODS.Joker{
     key = "kaicenat",
-    loc_txt = {
-        name = "La Llave A Todas Las Habitaciones",
-        text = {
-            "Te otorga {s:2,X:purple,C:white,E:1}^#1#{} Mult,",
-            "Al sacar una mano, cada carta tiene",
-            "una {C:green}probabilidad del 20%{} de",
-            "subir ese valor por {s:2,X:purple,C:white,E:1}+0.25{}"
-        }
-    },
 
     rarity = 4,
     cost = 20,
@@ -3367,18 +3148,6 @@ SMODS.Joker{
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
-    loc_txt = {
-        name = "Edward Skeletrix",
-        text = {
-            "Copia al {C:attention}joker{} que este {C:blue}mas a la izquierda.{}",
-            "Al salir de {C:attention}la tienda{},",
-            "Hay una probabilidad de {C:green}1 entre 2{} de que",
-            "Haga una {C:attention}copia exacta{} del {C:attention}joker{},",
-            "que este {C:red}mas a la derecha{}.",
-            "{C:inactive,s:0.9}No pueden hacerse copias de jokers legendarios.{}",
-            "{C:dark_edition,s:2,E:1}BILLETE GRATIS A LA ISLA DE SKELETRIX{}"
-        }
-    },
     calculate = function(self, card, context)
         local other_joker = G.jokers.cards[1]
         local other_joker_ret = SMODS.blueprint_effect(card, other_joker, context)
@@ -3416,16 +3185,6 @@ SMODS.Joker{
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
-    loc_txt = {
-        name = "Heldepa",
-        text = {
-            "Aumenta las C:chips}fichas{} actuales",
-            "de la {C:attention}ciega{} al",
-            "requerimiento de fichas requeridos en {C:red}esta ciega{}.",
-            "dividido entre 2, {C:attention}redondeado hacia abajo{}.",
-            "{C:mult,s:2,E:1}NUEVA COMPETENCIA A YEAT{}"
-        }
-    },
     calculate = function(self, card, context)
         if context.setting_blind  then
             G.E_MANAGER:add_event(Event({
@@ -3459,19 +3218,6 @@ SMODS.Joker{
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
-    loc_txt = {
-        name = "Netanyahu",
-        text = {
-            "{X:mult,C:white}X#1#{} Mult.",
-            "El {X:mult,C:white}XMult{} sera igual a la cantidad de",
-            "{C:money}dinero{} que tengas actualmente.",
-            "Al entrar {C:attention}a la tienda{}, tu dinero",
-            "se multiplicara por {X:money,C:white}X1.5{}, redondeado hacia abajo.",
-            "{X:edition,C:white,E:1,s:2}BENJAMIN{} {X:edition,C:white,E:1,s:2}BIG YAHU{}",
-            "{X:edition,C:white,E:1,s:2}PONME{} {X:edition,C:white,E:1,s:2}LOS{} {X:edition,C:white,E:1,s:2}FILIPINOS{} {X:edition,C:white,E:1,s:2}A{}",
-            "{X:edition,C:white,E:1,s:2}MENOS{} {X:edition,C:white,E:1,s:2}DE{} {X:edition,C:white,E:1,s:2}90{} {X:edition,C:white,E:1,s:2}CENTIMOS{}"
-        }
-    },
     config = { extra = {Xmult = 1}},
     loc_vars = function(self,info_queue,center)
         return {vars = {center.ability.extra.Xmult}}
@@ -3512,26 +3258,15 @@ SMODS.Joker{
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
     end,
-    loc_txt = {
-        name = "Hazbin Hotel",
-        text = {
-            "{X:purple,C:white,E:2,s:2}^#1#{} Mult.",
-            "Vender un {C:attention}consumible{} sumara un {X:purple,C:white,E:2,s:2}^0.5{} Mult.",
-            "Esto se reseteara al {C:attention}final del ante{}.",
-            "Al vender 12 {C:attention}consumibles{}, se creara un",
-            "{C:attention}Joker{} {C:rare}raro{} {C:blue}perecedero{} aleatorio en tu {C:attention}mazo{}.",
-            "{C:red,s:1.2,E:1}porque me haceis esto{}"
-        }
-    },
     config = { extra = {Emult = 1}},
     loc_vars = function(self,info_queue,center)
         return {vars = {center.ability.extra.Emult}}
     end,
     calculate = function(self, card, context)
         if context.selling_card and context.card.area == G.consumeables then
-            card.ability.extra.Emult = (card.ability.extra.Emult or 1) + 0.5
+            card.ability.extra.Emult = (card.ability.extra.Emult or 1) + 0.4
             if card.ability.extra.Emult >= 6 then
-                local new_joker = create_card('Joker', G.jokers, nil, math.min(pseudorandom("hazbin", 0.71, 1), 1),nil, nil, nil, 'car')
+                local new_joker = create_card('Joker', G.jokers, nil, pseudorandom("hazbin"),nil, nil, nil, 'car')
                 new_joker:add_to_deck()
                 G.jokers:emplace(new_joker)
                 new_joker:start_materialize()
@@ -3581,17 +3316,6 @@ SMODS.Joker{
     loc_vars = function(self,info_queue,center)
         return {vars = {center.ability.extra.hands}}
     end,
-    loc_txt = {
-        name = "PissWoman",
-        text = {
-            "Cada {C:blue}3 manos jugadas{}, añade una",
-            "{s:1.2,C:dark_edition,E:1}Edicion, sello y encantamiento{} aleatorio",
-            "A todas las {C:attention}cartas{} que saques {C:red}en tu mano.{}",
-            "Cada {C:attention}ante{} que completes, suma un",
-            "{C:attention}espacio de mano{}",
-            "{C:money,s:2,E:1}WHY MY PISS SMELL WAY TOO STRONG{}"
-        }
-    },
     calculate = function(self, card, context)
         if context.before and card.ability.extra.hands < 3 then
             card.ability.extra.hands = card.ability.extra.hands + 1
@@ -3661,13 +3385,6 @@ SMODS.Joker{
     atlas = "m_chimpa",
     pos = {x = 0, y = 0},
     soul_pos = {x = 1, y = 0},
-    loc_txt = {
-        name = "Maldicion Chimpa",
-        text = {
-            "{X:mult,C:white}X#1#{} Mult. Se destruye en {C:attention}3 rondas.{}",
-            "{C:red}No se puede vender.{}"
-        }
-    },
     config = { extra = {Xmult = 0.5, left = 3}},
     loc_vars = function(self,info_queue,center)
         return {vars = {center.ability.extra.Xmult, center.ability.extra.left}}
@@ -3712,16 +3429,6 @@ SMODS.Joker{
     atlas = "m_muchacho",
     pos = {x = 0, y = 0},
     soul_pos = {x = 1, y = 0},
-    loc_txt = {
-        name = "Maldicion Muchacho",
-        text = {
-            "{C:green}1 entre 2{} de que",
-            "una {C:attention}carta aleatoria{} en tu mano,",
-            "este {C:attention}volteada{}.",
-            "{C:red}No se puede vender.{}",
-            "{C:attention}Se destruye en 5 rondas.{}"
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         G.add_hacienda()
         card:add_sticker("eternal", true)
@@ -3764,16 +3471,6 @@ SMODS.Joker{
     atlas = "m_bubu",
     pos = {x = 0, y = 0},
     soul_pos = {x = 1, y = 0},
-    loc_txt = {
-        name = "Maldicion Bubu",
-        text = {
-            "Si sacas una mano con {C:attention}menos de 5 cartas{},",
-            "La siguente {C:blue}carta{} dara un",
-            "{X:mult,C:white}X0{} Mult.",
-            "{C:red}No se puede vender.{}",
-            "se destruye en {C:attention}5 rondas.{}"
-        }
-    },
     config = { extra = {Xmult = 1}},
     loc_vars = function(self,info_queue,center)
         return {vars = {center.ability.extra.Xmult}}
@@ -3828,19 +3525,6 @@ SMODS.Joker{
     atlas = "m_hacienda",
     pos = {x = 0, y = 0},
     soul_pos = {x = 1, y = 0},
-    loc_txt = {
-        name = "Maldicion Hacienda",
-        text = {
-            "Cada {C:attention}carta{} tiene una probabilidad de",
-            "{C:green}1 entre 2{} de quitarte {C:money}-1${}",
-            "{C:red}No se puede vender.{}",
-            "Se destruye en {C:attention}2 rondas.{}",
-            "Hay una probabilidad de que spawnee",
-            "de {C:green}1 entre 10{} que spawnee si",
-            "añades un joker del {C:attention}Alpiste Mod{} a tu mazo teniendo",
-            "mas de {C:money}100${}."
-        }
-    },
     add_to_deck = function (self, card, from_debuff)
         card:add_sticker("eternal", true)
         card:set_edition('e_negative')
@@ -3869,4 +3553,56 @@ SMODS.Joker{
     end
 
 }
-
+-- etajoker
+SMODS.Atlas{
+    key = "etajoker",
+    path = "Etajoker.png",
+    px = 71,
+    py = 95
+}
+SMODS.Joker{
+    key = "etajoker",
+    rarity = "prb_blindjoker",
+    cost = -145,
+    atlas = "etajoker",
+    blueprint_compat = false,
+    pos = {x = 0, y = 0},
+    config = {extra = {counter = 0, othercounter = 0}},
+    loc_vars = function (self, info_queue, card)
+        return {vars = {card.ability.extra.counter}}
+    end,
+    add_to_deck = function (self, card, from_debuff)
+        G.add_hacienda()
+        if not G.eta then
+            card:start_dissolve(nil, true)
+        end
+        card:set_edition('e_negative')
+        card:add_sticker("eternal", true)
+    end,
+    update = function(self,card,dt)
+        if G.STAGE == 2 and card.added_to_deck then
+        card.ability.extra.counter = card.ability.extra.counter + 1
+        end
+        if card.ability.extra.counter == 720 then
+            G.STATE = G.STATES.GAME_OVER
+            if not G.GAME.won and not G.GAME.seeded and not G.GAME.challenge then
+                G.PROFILES[G.SETTINGS.profile].high_scores.current_streak.amt = 0
+            end
+            G:save_settings()
+            G.FILE_HANDLER.force = true
+            G.STATE_COMPLETE = false
+        end
+    end,
+    in_pool = function (self, args)
+        return false
+    end,
+    calculate = function (self, card, context)
+        if context.blind_defeated then
+            card:start_dissolve()
+        end
+        if context.press_play then
+            card.ability.extra.counter = 0
+            card.ability.extra.othercounter = 0
+        end
+    end
+}
